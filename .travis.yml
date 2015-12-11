@@ -1,0 +1,9 @@
+language: python
+python:
+  - "3.4"
+install:
+  - wget http://download.redis.io/redis-stable.tar.gz && tar xzf redis-stable.tar.gz && cd redis-stable && make
+  - src/redis-server -v
+  - src/redis-server --daemonize yes
+  - cd ..
+script: make test
