@@ -4,9 +4,9 @@ setup(
     name='py-rq',
     version='1.0.0',
     packages=['pyrq'],
-    url='ssh://git@stash.allegrogroup.com/heur/py-rq.git',
-    license='proprietary',
+    url='ssh://git@github.com:heureka/py-rq.git',
+    license='MIT',
     author='Jan Chmelíček',
-    author_email='jan.chmelicek@heureka.cz',
+    author_email='vyvoj@heureka.cz',
     description='Redis queue for Python'
 )
