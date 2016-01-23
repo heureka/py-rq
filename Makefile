@@ -1,10 +1,10 @@
 .PHONY: build clean test
 
 build: .venv
+	$(CURDIR)/.venv/bin/pip install -r requirements.txt
 
 .venv:
 	virtualenv -p `which python3` $(CURDIR)/.venv
-	$(CURDIR)/.venv/bin/pip install -r requirements-dev.txt
 
 clean:
 	rm -rf $(CURDIR)/.venv

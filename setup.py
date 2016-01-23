@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='py-rq',
@@ -6,7 +6,10 @@ setup(
     packages=['pyrq'],
     url='ssh://git@github.com:heureka/py-rq.git',
     license='MIT',
-    author='Jan Chmelíček',
-    author_email='vyvoj@heureka.cz',
-    description='Redis queue for Python'
+    author='Heureka.cz',
+    author_email='podpora@heureka.cz',
+    description='Redis queue for Python',
+    install_requires=[
+        "redis>2.0.0"
+    ]
 )
