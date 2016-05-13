@@ -23,7 +23,7 @@ Use `from pyrq import Queue`.
 
 If you need slave synchronization, use *synced_slaves_count* and *synced_slaves_timeout* arguments.
 
-This data structure serves for managing queues of any **stringable** items. Typical data flow consist of several phases:
+This data structure serves for managing queues of **serializable** items. Typical data flow consist of several phases:
  1. Adding item (via `add_item(s)`)
  2. Getting item (via `get_items`)
  3. Acknowledging item (via `ack_item(s)`) when item was successfully processed **OR** rejecting item (via `reject_item(s)`) when error occurs.
@@ -50,7 +50,7 @@ Use `from pyrq import Pool`.
 
 If you need slave synchronization, use *synced_slaves_count* and *synced_slaves_timeout* arguments.
 
-This data structure serves for managing queues of any **stringable** items. Typical data flow consist of several phases:
+This data structure is designed to manage an infinite ordered set of **serializable** items. Typical data flow consist of several phases:
  1. Adding item (via `add_item(s)`)
  2. Getting item (via `get_items`)
  3. Acknowledging item (via `ack_item(s)`) when item was successfully processed.
