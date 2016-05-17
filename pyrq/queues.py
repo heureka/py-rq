@@ -2,7 +2,7 @@ import time
 import socket
 import os
 
-import pyrq.helpers
+from pyrq import helpers
 
 CHUNK_SIZE = 10
 PROCESSING_SUFFIX = '-processing'
@@ -77,7 +77,8 @@ class Queue(object):
         :param items: List of items to be added via pipeline
         """
         pipeline = self.redis.pipeline()
-        for chunk in _create_chunks(items):
+
+        for chunk in helpers.create_chunks(items, CHUNK_SIZE):
             pipeline.lpush(self.name, *chunk)
         pipeline.execute()
         self._wait_for_synced_slaves()
@@ -96,7 +97,7 @@ class Queue(object):
         :return: Success
         """
         self.ack_command(keys=[self.processing_queue_name, self.timeouts_hash_name],
-                                  args=[str(item)])
+                         args=[str(item)])
         self._wait_for_synced_slaves()
 
     def ack_items(self, items: list):
@@ -115,7 +116,7 @@ class Queue(object):
         :param item: Anything that is convertible to str
         """
         self.reject_command(keys=[self.name, self.processing_queue_name, self.timeouts_hash_name],
-                                     args=[str(item)])
+                            args=[str(item)])
         self._wait_for_synced_slaves()
 
     def reject_items(self, items: list):
@@ -182,7 +183,7 @@ class Queue(object):
                 else DEFAULT_SYNC_SLAVES_COUNT
             timeout = self.options['synced_slaves_timeout'] if self.options['synced_slaves_timeout'] \
                 else DEFAULT_SYNC_SLAVES_TIMEOUT
-            pyrq.helpers.wait_for_synced_slaves(self.redis, count, timeout)
+            helpers.wait_for_synced_slaves(self.redis, count, timeout)
 
     class QueueCommand(object):
 
