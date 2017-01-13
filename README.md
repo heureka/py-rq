@@ -45,6 +45,33 @@ queue.ack_items(list_of_values) # acknowledging items or
 queue.revert_items(list_of_values) # reverting items to the queue
 ```
 
+###UniqueQueue###
+Use `from pyrq import UniqueQueue`.
+
+If you need slave synchronization, use *synced_slaves_count* and *synced_slaves_timeout* arguments.
+
+This data structure serves for managing queues of **serializable** items. Typical data flow consist of several phases:
+ 1. Adding item (via `add_item(s)`)
+ 2. Getting item (via `get_items`)
+ 3. Acknowledging item (via `ack_item(s)`) when item was successfully processed **OR** rejecting item (via `reject_item(s)`) when error occurs.
+
+**BEWARE!**. You must either acknowledge item or reject item. If you fail to do this, you have to clean internal processing queues created by **py-RQ**.
+
+##Example##
+
+```python
+from pyrq import UniqueQueue
+
+redis_client = Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, password=REDIS_PASSWORD, decode_responses=True)
+queue = Queue(QUEUE_NAME, self.client, synced_slaves_enabled=True, synced_slaves_count=COUNT_OF_SLAVES, synced_slaves_timeout=TIMEOUT)
+
+queue.add_item(value) # adding item
+
+list_of_values = queue.get_items(10) # getting items
+queue.ack_items(list_of_values) # acknowledging items or
+queue.revert_items(list_of_values) # reverting items to the queue
+```
+
 ###Pool###
 Use `from pyrq import Pool`.
 
