@@ -168,7 +168,7 @@ class UniqueQueue(object):
         self._wait_for_synced_slaves()
 
     def _get_sorted_processing_queues(self):
-        return sorted(self.redis.hscan(self.timeouts_hash_name)[1].items(), reverse=True)
+        return sorted(self.redis.hscan_iter(self.timeouts_hash_name), reverse=True)
 
     @property
     def set_name(self):
