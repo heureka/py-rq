@@ -5,7 +5,7 @@ import os
 from unittest.mock import patch
 
 from redis import Redis
-from pyrq.unique_queues import UniqueQueue
+from pyrq.unique_queues import UniqueQueue, CHUNK_SIZE
 
 QUEUE_NAME = os.getenv('QUEUE_NAME', 'test-queue')
 PROCESSING_QUEUE_SCHEMA = QUEUE_NAME + '-processing-{}[{}][{}]'
@@ -48,6 +48,13 @@ class TestUniqueQueue(unittest.TestCase):
         self.assertEqual(items[0], self.client.rpop(QUEUE_NAME))
         self.assertEqual(items[1], self.client.rpop(QUEUE_NAME))
         self.assertEqual(None, self.client.rpop(QUEUE_NAME))
+        self.assertEqual(1, slaves_mock.call_count)
+
+    def test_add_items_with_multiple_chunks(self, slaves_mock):
+        chunks_count = 3
+        items = ['message-{}'.format(i) for i in range(chunks_count * CHUNK_SIZE)]
+
+        self.queue_instance.add_items(items)
         self.assertEqual(1, slaves_mock.call_count)
 
     def test_add_item(self, slaves_mock):
