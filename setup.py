@@ -10,6 +10,6 @@ setup(
     author_email='podpora@heureka.cz',
     description='Redis queue for Python',
     install_requires=[
-        "redis>2.0.0"
+        "redis>=3.0.0,<4"
     ]
 )

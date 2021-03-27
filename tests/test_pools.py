@@ -40,7 +40,14 @@ class TestPool(unittest.TestCase):
 
     def test_get_count_to_process(self, slaves_mock):
         timestamp = int(time.time())
-        self.client.zadd(POOL_NAME, 'a', timestamp - 5, 'b', timestamp - 3, c=timestamp + 5)
+        self.client.zadd(
+            POOL_NAME,
+            {
+                'a': timestamp - 5,
+                'b': timestamp - 3,
+                'c': timestamp + 5,
+            },
+        )
 
         self.assertEquals(2, self.pool_instance.get_count_to_process())
         self.assertEquals([POOL_NAME], self.client.keys())
@@ -166,7 +173,7 @@ class TestPool(unittest.TestCase):
         self.assertEquals(7, self.client.zcard(POOL_NAME))
         self.assertEquals([str(item) for item in test_data], self.client.zrange(POOL_NAME, 0, 10))
 
-        self.client.zadd(POOL_NAME, 7, TEST_TIME + 5)
+        self.client.zadd(POOL_NAME, {7: TEST_TIME + 5})
 
         self.assertEquals(['1', '2', '3'], self.pool_instance.get_items(3))
 
@@ -197,20 +204,20 @@ class TestPool(unittest.TestCase):
         self.assertEquals([POOL_NAME], self.client.keys())
 
     def _load_test_data_to_pool(self):
-        prepared_items = [
-            'a', TEST_TIME - 10 + 600.1,
-            'b', TEST_TIME - 5 + 600.1,
-            'c', TEST_TIME - 2 + 600.1,
-            'd', TEST_TIME + 600.1,
-            'e', TEST_TIME + 5
-        ]
-        self.client.zadd(POOL_NAME, *prepared_items)
+        prepared_items = {
+            'a': TEST_TIME - 10 + 600.1,
+            'b': TEST_TIME - 5 + 600.1,
+            'c': TEST_TIME - 2 + 600.1,
+            'd': TEST_TIME + 600.1,
+            'e': TEST_TIME + 5
+        }
+        self.client.zadd(POOL_NAME, prepared_items)
 
     def _load_items_to_pool(self, *args):
         timestamp = int(time.time())
-        prepared_items = []
-        for item in args:
-            prepared_items.append(item)
-            prepared_items.append(timestamp)
-        self.client.zadd(POOL_NAME, *prepared_items)
+        prepared_items = {
+            item: timestamp
+            for item in args
+        }
+        self.client.zadd(POOL_NAME, prepared_items)
 

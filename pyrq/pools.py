@@ -75,7 +75,7 @@ class Pool(object):
         """
         :param item: Anything that is convertible to str
         """
-        self.redis.zadd(self.name, item, int(time.time()))
+        self.redis.zadd(self.name, {item: int(time.time())})
         self._wait_for_synced_slaves()
 
     def add_items(self, items):
@@ -85,11 +85,11 @@ class Pool(object):
         pipeline = self.redis.pipeline()
         for chunk in helpers.create_chunks(items, self.options['chunk_size']):
             current_time = int(time.time())
-            prepared_items = []
-            for item in chunk:
-                prepared_items.append(item)
-                prepared_items.append(current_time)
-            pipeline.zadd(self.name, *prepared_items)
+            prepared_items = {
+                item: current_time
+                for item in chunk
+            }
+            pipeline.zadd(self.name, prepared_items)
         pipeline.execute()
         self._wait_for_synced_slaves()
 
