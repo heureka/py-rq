@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='py-rq',
-    version='4.0.0',
+    version='6.0.0',
     packages=['pyrq'],
     url='https://github.com/heureka/py-rq',
     license='MIT',
@@ -10,6 +10,6 @@ setup(
     author_email='podpora@heureka.cz',
     description='Redis queue for Python',
     install_requires=[
-        "redis>=3.0.0,<4"
+        "redis>=5.0.0"
     ]
 )
